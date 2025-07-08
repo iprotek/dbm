@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class DbmHelper
 { 
-    public static function backup(){
+    public static function backup($is_auto=false){
 
         $tables = DB::select('SHOW TABLES');
         $database = config('database.connections.mysql.database');
@@ -26,7 +26,10 @@ class DbmHelper
             }
         }
 
-        file_put_contents(storage_path("app/export.sql"), implode("\n", $rows));
+        if($is_auto)
+            file_put_contents(storage_path("app/db-backup/auto-export".date("YmdHis").".sql"), implode("\n", $rows));
+        else
+            file_put_contents(storage_path("app/db-backup/manual-export".date("YmdHis").".sql"), implode("\n", $rows));
 
         return ["status"=>1, "message"=>"completed" ];
     }
