@@ -26,11 +26,16 @@ class DbmHelper
             }
         }
 
-        if($is_auto)
-            file_put_contents(storage_path("app/db-backup/auto-export".date("YmdHis").".sql"), implode("\n", $rows));
-        else
-            file_put_contents(storage_path("app/db-backup/manual-export".date("YmdHis").".sql"), implode("\n", $rows));
-
+        $path = "";
+        if($is_auto){
+            $path = storage_path("app/db-backup/auto-export_".$database."_".date("YmdHis").".sql");
+            file_put_contents($path, implode("\n", $rows));
+        }
+        else{
+            $path = storage_path("app/db-backup/manual-export_".$database."_".date("YmdHis").".sql");
+            file_put_contents($path, implode("\n", $rows));
+            return response()->download($path, "manual-export_".$database."_".date("YmdHis").".sql")->deleteFileAfterSend(true);
+        }
         return ["status"=>1, "message"=>"completed" ];
     }
 
