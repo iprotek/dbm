@@ -8,15 +8,18 @@ use Illuminate\Support\Facades\DB;
 
 class DbmHelper
 { 
+
+    public static $excluded = ['migrations', 'failed_jobs', 'user_admins', 'user_admin_pay_accounts'];
+
     public static function backup($is_auto=false){
 
         $tables = DB::select('SHOW TABLES');
         $database = config('database.connections.mysql.database');
         $rows = [];
-        $excluded = ['migrations', 'failed_jobs', 'user_admins', 'user_admin_pay_accounts'];
+        //$excluded = ['migrations', 'failed_jobs', 'user_admins', 'user_admin_pay_accounts'];
         foreach ($tables as $tableObj) {
             $table = array_values((array) $tableObj)[0];
-            if (in_array($table,  $excluded)) continue; // skip
+            if (in_array($table,  static::$excluded)) continue; // skip
 
             $data = DB::table($table)->get();
             foreach ($data as $row) {
