@@ -10,4 +10,8 @@ class DbmController extends _CommonController
 { 
     public $guard = 'admin';
 
+    public function index(Request $request){
+        return $this->view('iprotek_dbm::index');
+    }
+
 }
