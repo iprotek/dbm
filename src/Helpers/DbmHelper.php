@@ -105,22 +105,15 @@ class DbmHelper
         return ["status"=>1, "message"=>"completed" ];
     }
 
-    public static function restore(Request $request = null ){
+    public static function restore(Request $request = null, $restore_location=null, $file_name=null){
         
         $tables = DB::select('SHOW TABLES');
         $database = config('database.connections.mysql.database');
         $rows = [];
 
-        //CAN RESTORE AFTER 10MINUTES
-        $has_restored = DbmRestore::whereRaw(' created_at > NOW() - INTERVAL 30 MINUTE ')->first();
-        if($has_restored){
-            return response()->json(["message"=>"Already restored. Please retry after 30 Minutes"], 403);
-            //return ["status"]
-        }
-
         
         if($request){
-            $file_name = "manual-export_".$database."_".date("YmdHis").".sql";
+            //$file_name = $file_name ?? "manual-export_".$database."_".date("YmdHis").".sql";
             $restore = PayModelHelper::create(DbmRestore::class, $request, [
                 "file_name"=>$file_name,
                 "is_restored"=>false,
@@ -129,7 +122,7 @@ class DbmHelper
             ]);
         }
         else{
-            $file_name = $is_auto === false ?  "manual-export_".$database."_".date("YmdHis").".sql" : "auto-export_".$database."_".date("YmdHis").".sql";
+            //$file_name = $is_auto === false ?  "manual-export_".$database."_".date("YmdHis").".sql" : "auto-export_".$database."_".date("YmdHis").".sql";
             $restore = DbmRestore::create([
                 "file_name"=>$file_name,
                 "is_restored"=>false,
@@ -149,7 +142,7 @@ class DbmHelper
 
         }
         //INSERTDATA FROM SQL FILE
-        $sql = file_get_contents(storage_path('app/db-backup/backup.sql'));
+        $sql = file_get_contents(storage_path('app/'.$restore_location));
         DB::unprepared($sql);
         //Log::error("Backup restored");
 

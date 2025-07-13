@@ -18,6 +18,7 @@ class DbmRestore extends _CommonModel
     ];
 
     protected $casts = [
-        "is_restored"=>"boolean"
+        "is_restored"=>"boolean",
+        "created_at"=>"datetime: F j, y h:i a"
     ];
 }
