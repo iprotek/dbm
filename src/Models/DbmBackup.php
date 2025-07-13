@@ -1,6 +1,6 @@
 <?php
 
-namespace iProek\Dbm\Models;
+namespace iProtek\Dbm\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

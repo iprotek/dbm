@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use iProtek\Core\Http\Controllers\Manage\FileUploadController; 
 use iProtek\Core\Http\Controllers\AppVariableController;
 use Illuminate\Http\Request;
+use iProtek\Dbm\Http\Controllers\DbmBackupController;
 
 Route::prefix('api')->middleware('api')->name('api')->group(function(){ 
 
@@ -15,9 +16,11 @@ Route::prefix('api')->middleware('api')->name('api')->group(function(){
       //FILE UPLOADS
       //include(__DIR__.'/api/meta-data.php'); 
 
-      Route::get('backup',function(Request $request){
+      Route::get('create-backup',function(Request $request){
           return \iProtek\Dbm\Helpers\DbmHelper::backup();
       })->name('.backup');
+
+      Route::get('backup-list', [DbmBackupController::class, 'get_list'])->name('.list');
 
     });
  
