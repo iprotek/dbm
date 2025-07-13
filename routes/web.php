@@ -12,12 +12,7 @@ Route::middleware(['web'])->group(function(){
     Route::middleware(['auth:admin','can:super-admin'])->prefix('manage')->name('manage')->group(function(){
         
         
-        Route::prefix('system/dbm')->name('.system.dbm')->group(function(){
-
-            //GET APP LISTS BASED ON THE LINK
-            Route::get('', [DbmController::class, 'index']);
-            
-        });
+        include(__DIR__.'/manage/dbm.php'); 
         
 
     });
