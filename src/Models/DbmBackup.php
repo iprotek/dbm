@@ -20,6 +20,7 @@ class DbmBackup extends Model
 
     public $casts = [
         "is_auto"=>"boolean",
-        "is_completed"=>"boolean"
+        "is_completed"=>"boolean",
+        "created_at"=>"datetime: F j, y h:i a"
     ];
 }
