@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use iProtek\Core\Models\_CommonModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DbmRestore extends Model
+class DbmRestore extends _CommonModel
 {
     use HasFactory, SoftDeletes;
 

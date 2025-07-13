@@ -16,9 +16,7 @@ Route::prefix('api')->middleware('api')->name('api')->group(function(){
       //FILE UPLOADS
       //include(__DIR__.'/api/meta-data.php'); 
 
-      Route::get('create-backup',function(Request $request){
-          return \iProtek\Dbm\Helpers\DbmHelper::backup();
-      })->name('.backup');
+      Route::get('create-backup',[DbmBackupController::class, 'backup'])->name('.backup');
 
       Route::get('backup-list', [DbmBackupController::class, 'get_list'])->name('.list');
 

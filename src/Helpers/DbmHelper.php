@@ -29,11 +29,6 @@ class DbmHelper
         $tables = DB::select('SHOW TABLES');
         $database = config('database.connections.mysql.database');
         $rows = [];
-
-
-        //
-        //$excluded = ['migrations', 'failed_jobs', 'user_admins', 'user_admin_pay_accounts'];
-
     
         if($request){
             $file_name = "manual-export_".$database."_".date("YmdHis").".sql";
@@ -45,7 +40,7 @@ class DbmHelper
             ]);
         }
         else{
-            $file_name = $is_auto ?  "manual-export_".$database."_".date("YmdHis").".sql" : "auto-export_".$database."_".date("YmdHis").".sql";
+            $file_name = $is_auto === false ?  "manual-export_".$database."_".date("YmdHis").".sql" : "auto-export_".$database."_".date("YmdHis").".sql";
             $backup = DbmBackup::create([
                 "is_auto"=> $is_auto,
                 "file_name"=>$file_name,
@@ -83,7 +78,7 @@ class DbmHelper
         return ["status"=>1, "message"=>"completed" ];
     }
 
-    public static function restore(){
+    public static function restore(Request $request = null ){
         
     }
 
