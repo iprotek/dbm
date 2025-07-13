@@ -60,10 +60,28 @@ class DbmHelper
             if (in_array($table,  static::$excluded)) continue; // skip
 
             $data = DB::table($table)->get();
-            foreach ($data as $row) {
-                $columns = array_map(fn($k) => "`$k`", array_keys((array)$row));
-                $values = array_map(fn($v) => is_null($v) ? 'NULL' : DB::getPdo()->quote($v), array_values((array)$row));
-                $rows[] = "INSERT INTO `$table` (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $values) . ");";
+            $data_length = count($data);
+            if($data_length > 0){
+                $renders = "";
+                for($counter = 0; $counter < $data_length; $counter++){
+                    $row = $data[$counter];
+                    if($counter == 0){
+                        $columns = array_map(fn($k) => "`$k`", array_keys((array)$row));
+                    }
+                    $values = array_map(fn($v) => is_null($v) ? 'NULL' : DB::getPdo()->quote($v), array_values((array)$row));
+                    if($data_length == 1)
+                        $renders= "INSERT INTO `$table` (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $values) . ")";
+                    else{
+                        if($counter == 0){
+                            $renders = "INSERT INTO `$table` (" . implode(', ', $columns) . ") VALUES";
+                        }
+                        $renders .= ($counter > 0 ? ",":"")."(" . implode(', ', $values) . ")";
+
+                    }
+                }
+
+                $rows[] = $renders.";";
+
             }
         }
 
@@ -85,6 +103,22 @@ class DbmHelper
     }
 
     public static function restore(Request $request = null ){
+        
+        $tables = DB::select('SHOW TABLES');
+        $database = config('database.connections.mysql.database');
+        $rows = [];
+
+        foreach ($tables as $tableObj) {
+            $table = array_values((array) $tableObj)[0];
+            if (in_array($table,  static::$excluded)) continue; // skip
+
+            //TRUNCATE TABLE
+            DB::table($table)->truncate();
+
+        }
+        //INSERTDATA FROM SQL FILE
+
+
         
     }
 
