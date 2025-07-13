@@ -5,6 +5,7 @@ use iProtek\Core\Http\Controllers\Manage\FileUploadController;
 use iProtek\Core\Http\Controllers\AppVariableController;
 use Illuminate\Http\Request;
 use iProtek\Dbm\Http\Controllers\DbmBackupController;
+use iProtek\Dbm\Http\Controllers\DbmRestoreController;
 
 Route::prefix('api')->middleware('api')->name('api')->group(function(){ 
 
@@ -19,6 +20,10 @@ Route::prefix('api')->middleware('api')->name('api')->group(function(){
       Route::get('create-backup',[DbmBackupController::class, 'backup'])->name('.backup');
 
       Route::get('backup-list', [DbmBackupController::class, 'get_list'])->name('.list');
+
+      Route::post('restore-from-file', [DbmRestoreController::class, 'restore'])->name('.restore');
+
+      Route::get('restore-list', [DbmRestoreController::class, 'restore_list'])->name('.restore-list');
 
     });
  

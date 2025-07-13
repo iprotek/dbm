@@ -16,4 +16,8 @@ class DbmRestore extends _CommonModel
         "dbm_backup_id",
         "status_info"
     ];
+
+    protected $casts = [
+        "is_restored"=>"boolean"
+    ];
 }

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use iProtek\Dbm\Models\DbmBackup;
+use iProtek\Dbm\Models\DbmRestore;
 use iProtek\Core\Helpers\PayModelHelper;
 
 class DbmHelper
@@ -22,6 +23,8 @@ class DbmHelper
         'web_visitors',
         'jobs',
         'sys_notifications',
+        'dbm_backups',
+        'dbm_restores'
     ];
 
     public static function backup( Request $request = null, $is_auto=false){
@@ -108,6 +111,34 @@ class DbmHelper
         $database = config('database.connections.mysql.database');
         $rows = [];
 
+        //CAN RESTORE AFTER 10MINUTES
+        $has_restored = DbmRestore::whereRaw(' created_at > NOW() - INTERVAL 30 MINUTE ')->first();
+        if($has_restored){
+            return response()->json(["message"=>"Already restored. Please retry after 30 Minutes"], 403);
+        }
+
+        
+        if($request){
+            $file_name = "manual-export_".$database."_".date("YmdHis").".sql";
+            $restore = PayModelHelper::create(DbmRestore::class, $request, [
+                "file_name"=>$file_name,
+                "is_restored"=>false,
+                "dbm_backup_id"=>0,
+                "status_info"=>"Restoring data from backup"
+            ]);
+        }
+        else{
+            $file_name = $is_auto === false ?  "manual-export_".$database."_".date("YmdHis").".sql" : "auto-export_".$database."_".date("YmdHis").".sql";
+            $restore = DbmRestore::create([
+                "file_name"=>$file_name,
+                "is_restored"=>false,
+                "dbm_backup_id"=>0,
+                "status_info"=>"Restoring data from backup"
+            ]);
+
+        }
+
+
         foreach ($tables as $tableObj) {
             $table = array_values((array) $tableObj)[0];
             if (in_array($table,  static::$excluded)) continue; // skip
@@ -117,9 +148,16 @@ class DbmHelper
 
         }
         //INSERTDATA FROM SQL FILE
+        $sql = file_get_contents(storage_path('app/db-backup/backup.sql'));
+        DB::unprepared($sql);
+        //Log::error("Backup restored");
+
+        $restore->is_restored = true;
+        $restore->status_info = "Successfully restored.";
+        $restore->save();
 
 
-        
+        return ["status"=>1, "message"=>"Restoring successful"];
     }
 
 
