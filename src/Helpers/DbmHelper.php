@@ -29,6 +29,12 @@ class DbmHelper
         $tables = DB::select('SHOW TABLES');
         $database = config('database.connections.mysql.database');
         $rows = [];
+
+        $generated = DbmBackup::whereRaw(' created_at > NOW() - INTERVAL 30 MINUTE ')->first();
+        if($generated){
+            //abort(403, "Already generated please retry after 30 Minutes");
+            return response()->json(["message"=>"Already generated please retry after 30 Minutes"], 403);
+        }
     
         if($request){
             $file_name = "manual-export_".$database."_".date("YmdHis").".sql";
