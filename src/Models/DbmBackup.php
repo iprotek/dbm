@@ -17,4 +17,9 @@ class DbmBackup extends Model
         "status_info",
         "is_completed"
     ];
+
+    public $casts = [
+        "is_auto"=>"boolean",
+        "is_completed"=>"boolean"
+    ];
 }

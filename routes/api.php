@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 Route::prefix('api')->middleware('api')->name('api')->group(function(){ 
 
-    Route::prefix('apps/group/{group_id}')->middleware(['pay.api'])->name('.apps')->group(function(){
+    Route::prefix('group/{group_id}/system/dbm')->middleware(['pay.api'])->name('.system.dbm')->group(function(){
       
       //FILE UPLOADS
       //include(__DIR__.'/api/file-upload.php');
