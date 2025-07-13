@@ -21,6 +21,7 @@ class CreateDbmBackupsTable extends Migration
             $table->boolean('is_auto')->default(1);
             $table->string('file_name');
             $table->string('status_info')->nullable();
+            $table->boolean('is_completed')->default(0);
            
         });
     }

@@ -14,6 +14,7 @@ class DbmBackup extends Model
     public $fillable = [
         "is_auto",
         "file_name",
-        "status_info"
+        "status_info",
+        "is_completed"
     ];
 }
