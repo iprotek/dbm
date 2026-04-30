@@ -17,13 +17,33 @@ Route::prefix('api')->middleware('api')->name('api')->group(function(){
       //FILE UPLOADS
       //include(__DIR__.'/api/meta-data.php'); 
 
-      Route::get('create-backup',[DbmBackupController::class, 'backup'])->name('.backup');
+      Route::get('create-backup',[
+        "uses"=>[DbmBackupController::class, 'backup'],
+        "description"=>"create backup for database",
+        "is_visible"=>true,
+        "is_allow"=>false
+      ])->name('.backup');
 
-      Route::get('backup-list', [DbmBackupController::class, 'get_list'])->name('.list');
+      Route::get('backup-list', [
+        "uses"=>[DbmBackupController::class, 'get_list'],
+        "description"=>"Get backup list for database",
+        "is_visible"=>true,
+        "is_allow"=>false
+      ])->name('.list');
 
-      Route::post('restore-from-file', [DbmRestoreController::class, 'restore'])->name('.restore');
+      Route::post('restore-from-file', [
+        "uses"=>[DbmRestoreController::class, 'restore'],
+        "description"=>"Restore database from backup file",
+        "is_visible"=>true,
+        "is_allow"=>false
+      ])->name('.restore');
 
-      Route::get('restore-list', [DbmRestoreController::class, 'restore_list'])->name('.restore-list');
+      Route::get('restore-list', [
+        "uses"=>[DbmRestoreController::class, 'restore_list'],
+        "description"=>"Get restore list for database",
+        "is_visible"=>true,
+        "is_allow"=>false
+      ])->name('.restore-list');
 
     });
  
